@@ -50,7 +50,7 @@ model Login {
 
   email String @unique
 
-  passwordHash String @map("password_hash")
+  passwordHash String? @map("password_hash")
 
   loginType LoginType @map("login_type")
 
