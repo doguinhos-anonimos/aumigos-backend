@@ -7,15 +7,119 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum PetAge {
+  PUPPY
+  YOUNG
+  ADULT
+  SENIOR
+}
+
+enum InterestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum LoginType {
+  USER
+  INSTITUTION
+}
+
 model User {
   id String @id @default(uuid())
 
   name         String
-  email        String @unique
-  passwordHash String @map("password_hash")
+  phone        String? @unique
+  passwordHash String  @map("password_hash")
+
+  latitude  Float?
+  longitude Float?
+  address   String?
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
+  logins   Login[]
+  Interest Interest[]
+
   @@map("users")
+}
+
+model Login {
+  id String @id @default(uuid())
+
+  email String @unique
+
+  passwordHash String @map("password_hash")
+
+  loginType LoginType @map("login_type")
+
+  userId        String? @map("user_id")
+  institutionId String? @map("institution_id")
+
+  user        User?        @relation(fields: [userId], references: [id])
+  institution Institution? @relation(fields: [institutionId], references: [id])
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  lastLogin DateTime? @map("last_login")
+
+  @@map("logins")
+}
+
+model Institution {
+  id String @id @default(uuid())
+
+  name      String
+  address   String
+  phone     String?
+  cnpj      String  @unique
+  latitude  Float?
+  longitude Float?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  pets   Pet[]
+  logins Login[]
+
+  @@map("institutions")
+}
+
+model Pet {
+  id String @id @default(uuid())
+
+  name        String
+  species     String
+  age         PetAge
+  description String?
+  photoUrl    String? @map("photo_url")
+
+  institutionId String      @map("institution_id")
+  institution   Institution @relation(fields: [institutionId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  interests Interest[]
+
+  @@map("pets")
+}
+
+model Interest {
+  id String @id @default(uuid())
+
+  userId String @map("user_id")
+  petId  String @map("pet_id")
+
+  user User @relation(fields: [userId], references: [id])
+  pet  Pet  @relation(fields: [petId], references: [id])
+
+  status  InterestStatus @default(PENDING)
+  message String?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("interests")
 }
