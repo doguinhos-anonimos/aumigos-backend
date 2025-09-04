@@ -1,7 +1,7 @@
 import { Type } from "@sinclair/typebox";
-import type { FastifyInstance } from "fastify";
+import type { AppInstance } from "@/app";
 
-export async function Logout(app: FastifyInstance) {
+export async function Logout(app: AppInstance) {
 	app.post(
 		"/auth/logout",
 		{

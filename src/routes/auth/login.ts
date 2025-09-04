@@ -1,6 +1,6 @@
 import { Type } from "@sinclair/typebox";
 import { compare } from "bcryptjs";
-import type { FastifyInstance } from "fastify";
+import type { AppInstance } from "@/app";
 import { env } from "@/env";
 import { prisma } from "@/lib/prisma";
 import {
@@ -8,7 +8,7 @@ import {
 	BadRequestErrorSchema,
 } from "../_errors/bad-request-error";
 
-export async function Login(app: FastifyInstance) {
+export async function Login(app: AppInstance) {
 	app.post(
 		"/auth/login",
 		{
@@ -26,17 +26,18 @@ export async function Login(app: FastifyInstance) {
 			},
 		},
 		async (request, reply) => {
-			const { email, password } = request.body as {
-				email: string;
-				password: string;
-			};
+			const { email, password } = request.body;
 
-			const userExist = await prisma.user.findUnique({
+			const userExist = await prisma.login.findUnique({
 				where: { email },
 			});
 
 			if (!userExist) {
 				throw new BadRequestError("Invalid email or password");
+			}
+
+			if (!userExist.passwordHash) {
+				throw new BadRequestError("Login with OAuth2 provider");
 			}
 
 			const passwordCompare = await compare(password, userExist.passwordHash);
