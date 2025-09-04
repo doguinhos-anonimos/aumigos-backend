@@ -60,8 +60,9 @@ model Login {
   user        User?        @relation(fields: [userId], references: [id])
   institution Institution? @relation(fields: [institutionId], references: [id])
 
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
   lastLogin DateTime? @map("last_login")
 
   @@map("logins")
