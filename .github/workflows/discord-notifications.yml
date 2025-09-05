@@ -41,7 +41,7 @@ jobs:
               }]
             };
 
-            await fetch('https://discord.com/api/webhooks/1413353389483622431/BoK_IGyJH_1rei2Fcp7BEPm1XNLr1sGxVO_8S7_WUYHpog9hkpg4Bxop8cwqsYwroQwT', {
+            await fetch('https://discord.com/api/webhooks/1413364177040576516/VeqV_wLSyEEQZRAW-HqQ6eqB2YxnF-LhiQ3OrzRBvNbab2ZPgQYBJM2zxRomcf3iMkID', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
