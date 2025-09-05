@@ -10,14 +10,16 @@ import { env } from "@/env";
 import { errorHandler } from "./error-handler";
 import { Login } from "./routes/auth/login";
 import { Logout } from "./routes/auth/logout";
-import { Me } from "./routes/auth/me";
-import { Register } from "./routes/auth/register";
+import { RegisterInstitution } from "./routes/institution/register";
+import { RegisterUser } from "./routes/user/register";
+
+const app = fastify({
+	logger: env.NODE_ENV === "development",
+}).withTypeProvider<TypeBoxTypeProvider>();
+
+export type AppInstance = typeof app;
 
 export function createApp(): FastifyInstance {
-	const app = fastify({
-		logger: env.NODE_ENV === "development",
-	}).withTypeProvider<TypeBoxTypeProvider>();
-
 	app.setErrorHandler(errorHandler);
 
 	app.register(fastifyRateLimit, {
@@ -68,10 +70,10 @@ export function createApp(): FastifyInstance {
 	});
 
 	// Auth routes
-	app.register(Register);
+	app.register(RegisterUser);
+	app.register(RegisterInstitution);
 	app.register(Login);
 	app.register(Logout);
-	app.register(Me);
 
 	return app;
 }
