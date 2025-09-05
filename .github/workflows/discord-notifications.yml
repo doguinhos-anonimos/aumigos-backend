@@ -18,8 +18,8 @@ jobs:
             const pr = context.payload.pull_request;
 
             const payload = {
-              username: "Captain Hook",
-              avatar_url: "https://gravatar.com/avatar/7dfb35899d7784b5711ad6aaf7ccf652?s=400&d=robohash&r=x",
+              username: "Caramelo Bot",
+              avatar_url: "https://cdn.discordapp.com/attachments/1351305391929036964/1413372004609949726/image.png?ex=68bbb0c1&is=68ba5f41&hm=ded24cd376acbb6246d59fdd033d54486ddc2013e268c02ef2445bb218e24efb&",
               embeds: [{
                 title: `Pull Request ${eventType}!`,
                 description: `**${pr.title}**\n${pr.body?.substring(0, 100) || ''}${pr.body?.length > 100 ? '...' : ''}`,
