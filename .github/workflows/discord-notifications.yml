@@ -1,0 +1,50 @@
+name: Discord Notifications
+
+on:
+  pull_request:
+    types: [opened, closed]
+
+jobs:
+  notify_discord:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send notification to Discord
+        if: github.event.pull_request.merged == true || github.event.action == 'opened'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const eventType = context.payload.pull_request.merged ? 'closed' : 'opened';
+            const { owner, repo } = context.repo;
+            const pr = context.payload.pull_request;
+
+            const payload = {
+              username: "Caramelo Bot",
+              avatar_url: "https://cdn.discordapp.com/attachments/1351305391929036964/1413372004609949726/image.png?ex=68bbb0c1&is=68ba5f41&hm=ded24cd376acbb6246d59fdd033d54486ddc2013e268c02ef2445bb218e24efb&",
+              embeds: [{
+                title: `Pull Request ${eventType}!`,
+                description: `**${pr.title}**\n${pr.body?.substring(0, 100) || ''}${pr.body?.length > 100 ? '...' : ''}`,
+                url: pr.html_url,
+                color: eventType === 'mergeado' ? 5763719 : 15105570,
+                author: {
+                  name: pr.user.login,
+                  url: pr.user.html_url,
+                  icon_url: pr.user.avatar_url
+                },
+                fields: [
+                  { name: "Repositório", value: `${owner}/${repo}`, inline: true },
+                  { name: "Branch", value: pr.head.ref, inline: true }
+                ],
+                footer: {
+                  text: `PR #${pr.number}`
+                },
+                timestamp: new Date().toISOString()
+              }]
+            };
+
+            await fetch('https://discord.com/api/webhooks/1413364177040576516/VeqV_wLSyEEQZRAW-HqQ6eqB2YxnF-LhiQ3OrzRBvNbab2ZPgQYBJM2zxRomcf3iMkID', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(payload)
+            });
